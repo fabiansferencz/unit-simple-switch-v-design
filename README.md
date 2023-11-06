@@ -16,10 +16,10 @@ The Switch design is capable of driving incoming packets to 4 different ports.
 
 A packets has the following frame (the frame is valid for both input and output of the SWITCH):
 
-- ====================================================================================-
--    Destination Address     |   Source Address  |   Data Length |   Payload Data     -
--            8 b             |         8 b       |       8 b     |       0-255 B      -
-- ====================================================================================-
+> =================================================================
+> Destination Address | Source Address | Data Length | Payload Data
+>         8 b         |      8 b       |     8 b     |   0-255 B 
+> =================================================================
 
 
 ![Alt text](switch_unit.png)
