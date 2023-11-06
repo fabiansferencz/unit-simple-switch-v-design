@@ -10,16 +10,16 @@ Welcome to the Simple Cluster Switch DUT TB!
 
 The Switch design is capable of driving incoming packets to 4 different ports.
 
-The packet enters trough the input interface byte after byte and is stored in one of the internal FIFOs corresponding to each port.
-Each port has an address configurable trough the memory interface. 
-For the packet to arrive to a specific port, the DESTINATION ADDRESS(DA) should be the same as the port address.
+- The packet enters trough the input interface byte after byte and is stored in one of the internal FIFOs corresponding to each port.
+- Each port has an address configurable trough the memory interface. 
+- For the packet to arrive to a specific port, the DESTINATION ADDRESS(DA) should be the same as the port address.
 
 A packets has the following frame (the frame is valid for both input and output of the SWITCH):
 
-|====================================================================================|
-|   Destination Address     |   Source Address  |   Data Length |   Payload Data     |
-|           8 b             |         8 b       |       8 b     |       0-255 B      |
-|====================================================================================|
+- ====================================================================================-
+-    Destination Address     |   Source Address  |   Data Length |   Payload Data     -
+-            8 b             |         8 b       |       8 b     |       0-255 B      -
+- ====================================================================================-
 
 
 ![Alt text](switch_unit.png)
