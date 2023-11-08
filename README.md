@@ -8,6 +8,8 @@ Welcome to the Simple Cluster Switch DUT TB!
 
 ## Unit level description
 
+[EDAPlaygroung Link](https://edaplayground.com/x/fPtY)
+
 The Switch design is capable of driving incoming packets to 4 different ports.
 
 - The packet enters trough the input interface byte after byte and is stored in one of the internal FIFOs corresponding to each port.
@@ -16,10 +18,10 @@ The Switch design is capable of driving incoming packets to 4 different ports.
 
 A packets has the following frame (the frame is valid for both input and output of the SWITCH):
 ```
-=================================================================
-Destination Address | Source Address | Data Length | Payload Data
-        8 b         |      8 b       |     8 b     |   0-255 B 
-=================================================================
+|=================================================================|
+|Destination Address | Source Address | Data Length | Payload Data|
+|        8 b         |      8 b       |     8 b     |   0-255 B   |
+|=================================================================|
 ```
 
 ![Alt text](switch_unit.png)
