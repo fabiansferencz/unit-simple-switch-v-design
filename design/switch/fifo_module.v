@@ -1,5 +1,7 @@
+`include "mem_reg.v"
+
 module fifo # (
-  parameter FIFO_SIZE = 64,
+  parameter FIFO_SIZE = 64,//2^FIFO_SIZE = number of locations in FIFO
   parameter W_WIDTH = 8
 )(
   clk, rst_n,
@@ -18,7 +20,14 @@ module fifo # (
   reg [W_WIDTH-1:0] data_out_s;
 
   reg[$clog2(FIFO_SIZE)-1:0] wr_pos, rd_pos;
-  reg [W_WIDTH-1:0] ram [FIFO_SIZE];
+  reg [W_WIDTH-1:0] ram [0:$clog2(FIFO_SIZE)-1];
+
+  genvar i;
+  generate for(i = 0; i < FIFO_SIZE; i++) begin
+    mem_reg FIFO_DUT_REG(.clk(clk), .rst_n(rst_n), .d(data_in[i]), .q(data_out[i]));
+    assign mem_out[i] = data_out[i];
+  end	
+  endgenerate 
 
   always @ (posedge clk or negedge rst_n) begin
     if(!rst_n) begin
@@ -28,7 +37,7 @@ module fifo # (
       rd_pos <= 'b0;
       wr_pos <= 'b0;
 
-      ram <= '{default:0};
+      ram <= '{default:8'b0};
     end 
     else begin
       if(wr_en && !full_s) begin

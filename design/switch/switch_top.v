@@ -1,6 +1,6 @@
 // Code your design here
-`include "port_top.sv"
-`include "mem_top.sv"
+`include "port_top.v"
+`include "mem_top.v"
 
 
 module switch_top (

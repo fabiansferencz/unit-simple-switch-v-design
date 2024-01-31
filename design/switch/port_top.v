@@ -1,5 +1,5 @@
-`include "fsm_module.sv"
-`include "fifo_module.sv"
+`include "fsm_module.v"
+`include "fifo_module.v"
 
 
 module port_top # (

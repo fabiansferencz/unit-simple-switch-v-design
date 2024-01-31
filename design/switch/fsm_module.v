@@ -1,7 +1,12 @@
-typedef enum { ADDR_WAIT, PARITY_LOAD, DATA_LOAD, PORT_BUSY, IDLE} state_m;
+//typedef enum { ADDR_WAIT, PARITY_LOAD, DATA_LOAD, PORT_BUSY, IDLE} state_m;
 
 module fsm # (
-  parameter W_WIDTH = 8
+  parameter W_WIDTH = 8,
+  parameter ADDR_WAIT = 0,
+  parameter PARITY_LOAD = 1,
+  parameter DATA_LOAD = 2,
+  parameter PORT_BUSY = 3,
+  parameter IDLE = 4
 )(
   clk, rst_n,
   sw_en,
@@ -16,7 +21,7 @@ module fsm # (
   input [W_WIDTH-1:0] port_addr, data_in;
   output wr_en; 
 
-  state_m state_ff, state_nxt;
+  reg[2:1] state_ff, state_nxt;
   reg wr_en_ff, wr_en_nxt, port_busy_ff, port_busy_nxt;
 
   assign wr_en = wr_en_ff;
