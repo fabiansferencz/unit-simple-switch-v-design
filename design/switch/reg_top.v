@@ -2,21 +2,25 @@
 `include "reg_fsm.v"
 
 module reg_top # (
-  parameter NUM_OF_REG = 4
+  parameter NUM_OF_REG = 4,
+  parameter W_WIDTH = 8
 )(
   input clk, rst_n,
   input sel_en, wr_rd_s,
-  input [7:0] addr, wr_data,
+  input [W_WIDTH-1:0] addr, wr_data,
 
-  output [7:0] rd_data,
-  output [7:0] reg_data2port_out_0, reg_data2port_out_1, reg_data2port_out_2, reg_data2port_out_3,
+  output [W_WIDTH-1:0] rd_data,
+  output [W_WIDTH-1:0] reg_data2port_out_0, reg_data2port_out_1, reg_data2port_out_2, reg_data2port_out_3,
   output ack
 );
 
   wire [7:0] reg_data2port_w [NUM_OF_REG-1:0];
   wire [7:0] wr_en_w;
 
-  reg_block BLOCK_DUT_REG(
+  reg_block # (
+    .NUM_OF_REG(NUM_OF_REG),
+    .W_WIDTH(W_WIDTH)
+  ) BLOCK_DUT_REG (
     .clk(clk), 
     .rst_n(rst_n), 
     .wr_en(wr_en_w), 
@@ -27,7 +31,10 @@ module reg_top # (
     .reg_data2port_out_3(reg_data2port_w[3])
   );
 
-  reg_fsm FSM_DUT_REG(
+  reg_fsm # (
+    .NUM_OF_REG(NUM_OF_REG),
+    .W_WIDTH(W_WIDTH)
+  ) FSM_DUT_REG (
     .clk(clk), 
     .rst_n(rst_n),
     .sel_en(sel_en),

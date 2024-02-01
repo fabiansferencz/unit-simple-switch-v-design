@@ -1,13 +1,14 @@
 module reg_fsm # (
-  parameter NUM_OF_REG = 4
+  parameter NUM_OF_REG = 4,
+  parameter W_WIDTH = 8
 )(
   input clk, rst_n,
   input sel_en, wr_rd_s,
-  input [7:0] addr,
-  input [7:0] reg_data2port_in_0, reg_data2port_in_1, reg_data2port_in_2, reg_data2port_in_3,
+  input [W_WIDTH-1:0] addr,
+  input [W_WIDTH-1:0] reg_data2port_in_0, reg_data2port_in_1, reg_data2port_in_2, reg_data2port_in_3,
   
-  output [7:0] wr_en,
-  output [7:0] rd_data,
+  output [W_WIDTH-1:0] wr_en,
+  output [W_WIDTH-1:0] rd_data,
   output ack
 );
 
@@ -49,7 +50,7 @@ module reg_fsm # (
     if(!rst_n) begin
       ack_ff <= 0;
       rd_data_ff <= 0;
-      wr_en_nxt <= 0;
+      wr_en_ff <= 0;
     end 
     else begin
       ack_ff <= ack_nxt;
