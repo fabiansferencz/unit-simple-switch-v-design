@@ -9,6 +9,8 @@ module fifo_mem # (
   output [$clog2(FIFO_SIZE)-1:0] wr_pos, rd_pos
 );  
 
+reg [W_WIDTH-1:0] ram [FIFO_SIZE-1:0];//a memory with 64 locations depth and 8 bits word
+
 reg [$clog2(FIFO_SIZE)-1:0] wr_pos_nxt, wr_pos_ff;
 reg [$clog2(FIFO_SIZE)-1:0] rd_pos_nxt, rd_pos_ff;
 reg [W_WIDTH-1:0] data_out_s_nxt, data_out_s_ff;

@@ -14,6 +14,7 @@ module fifo_top # (
 
 wire [$clog2(FIFO_SIZE)-1:0] wr_pos_w, rd_pos_w;
 wire fsm2mem_wr_en_w, fsm2mem_rd_en_w;
+wire [W_WIDTH-1:0] fsm2mem_data_w;
 
 fifo_fsm  # (
   .FIFO_SIZE(FIFO_SIZE),
@@ -25,8 +26,10 @@ fifo_fsm  # (
   .rd_en(rd_en),
   .wr_pos(wr_pos_w),
   .rd_pos(rd_pos_w),
+  .data_in(data_in),
   .fsm2mem_wr_en(fsm2mem_wr_en_w),
   .fsm2mem_rd_en(fsm2mem_rd_en_w), 
+  .data_out(fsm2mem_data_w),
   .full_s(full),
   .empty_s(empty)
 );
@@ -39,7 +42,7 @@ fifo_mem  # (
   .rst_n(rst_n), 
   .wr_en(fsm2mem_wr_en_w), 
   .rd_en(fsm2mem_rd_en_w),
-  .data_in(data_in),
+  .data_in(fsm2mem_data_w),
   .data_out(data_out),
   .wr_pos(wr_pos_w),
   .rd_pos(rd_pos_w) 
