@@ -1,13 +1,12 @@
 module fifo # (
-  parameter FIFO_SIZE = 64,
-  parameter W_WIDTH = 8
+    parameter FIFO_SIZE = 64,
+    parameter W_WIDTH = 8
 )(
-  input clk, rst_n,
-  input wr_en, rd_en,
-  input [W_WIDTH-1:0] data_in,
-  output [W_WIDTH-1:0] data_out,
-  //output [$clog2(FIFO_SIZE)-1:0] wr_pos, rd_pos,,
-  output full, empty
+    input clk, rst_n,
+    input wr_en, rd_en,
+    input [W_WIDTH-1:0] data_in,
+    output [W_WIDTH-1:0] data_out,
+    output reg full, empty
 );  
 
     reg [W_WIDTH-1:0] ram [FIFO_SIZE-1:0];//a memory with 64 locations depth and 8 bits word
