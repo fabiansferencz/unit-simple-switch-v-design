@@ -1,9 +1,8 @@
-`include "fsm_module.v"
-`include "fifo_top.v"
+`include "fsm_top.v"
+`include "fifo_module.v"
 
 
 module port_top # (
-  parameter NUM_OF_PORTS = 4,
   parameter FIFO_SIZE = 64,
   parameter W_WIDTH = 8 //WORD width
 )(
@@ -46,5 +45,5 @@ module port_top # (
     .wr_en(wr_en_w)
   );
 
-  assign rd_out = !port_busy;
+  assign rd_out = !fifo_full_w;
 endmodule : port_top

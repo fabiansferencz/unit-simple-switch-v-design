@@ -2,7 +2,6 @@
 
 module fsm # (
     parameter W_WIDTH = 8
-
 )(
     input clk, rst_n,
     input sw_en, port_busy, wdog,

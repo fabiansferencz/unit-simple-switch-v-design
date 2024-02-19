@@ -1,11 +1,11 @@
-module reg_fsm # (
-  parameter NUM_OF_REG = 4,
+module reg_decoder # (
+  parameter REG_ADDR = 0,
   parameter W_WIDTH = 8
 )(
   input clk, rst_n,
   input sel_en, wr_rd_s,
   input [W_WIDTH-1:0] addr,
-  input [W_WIDTH-1:0] reg_data2port_in_0, reg_data2port_in_1, reg_data2port_in_2, reg_data2port_in_3,
+  input [W_WIDTH-1:0] reg_data2port_in,
   
   output [W_WIDTH-1:0] wr_en,
   output [W_WIDTH-1:0] rd_data,
@@ -22,19 +22,14 @@ module reg_fsm # (
     rd_data_nxt = rd_data_ff;
     wr_en_nxt = wr_en_ff;
 
-    if(sel_en) begin
+    if(sel_en && addr == REG_ADDR) begin
       if(wr_rd_s) begin
         wr_en_nxt = 0;//cleare previous wr_en for continous writting
         wr_en_nxt[addr] = 1;
         ack_nxt = 1;
       end	
       else begin
-        case(addr)
-            0 : rd_data_nxt = reg_data2port_in_0;
-            1 : rd_data_nxt = reg_data2port_in_1;
-            2 : rd_data_nxt = reg_data2port_in_2;
-            3 : rd_data_nxt = reg_data2port_in_3;
-        endcase
+        rd_data_nxt = reg_data2port_in;
         ack_nxt = 1;
       end	
     end
@@ -63,4 +58,4 @@ module reg_fsm # (
   assign ack = ack_ff;
   assign wr_en = wr_en_ff;
 
-endmodule : reg_fsm
+endmodule : reg_decoder

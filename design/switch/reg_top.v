@@ -1,8 +1,8 @@
-`include "reg_block.v"
-`include "reg_fsm.v"
+`include "reg_rtl.v"
+`include "reg_decoder.v"
 
 module reg_top # (
-  parameter NUM_OF_REG = 4,
+  parameter REG_ADDR = 0,
   parameter W_WIDTH = 8
 )(
   input clk, rst_n,
@@ -10,47 +10,37 @@ module reg_top # (
   input [W_WIDTH-1:0] addr, wr_data,
 
   output [W_WIDTH-1:0] rd_data,
-  output [W_WIDTH-1:0] reg_data2port_out_0, reg_data2port_out_1, reg_data2port_out_2, reg_data2port_out_3,
+  output [W_WIDTH-1:0] reg_data2port_out,
   output ack
 );
 
-  wire [7:0] reg_data2port_w [NUM_OF_REG-1:0];
-  wire [7:0] wr_en_w;
+  wire [7:0] reg_data2port_w;
+  wire wr_en_w;
 
-  reg_block # (
-    .NUM_OF_REG(NUM_OF_REG),
+  reg_rtl # (
     .W_WIDTH(W_WIDTH)
-  ) BLOCK_DUT_REG (
+  ) CONF_PORT_REG_DUT (
     .clk(clk), 
     .rst_n(rst_n), 
     .wr_en(wr_en_w), 
-    .wr_data(wr_data), 
-    .reg_data2port_out_0(reg_data2port_w[0]),
-    .reg_data2port_out_1(reg_data2port_w[1]),
-    .reg_data2port_out_2(reg_data2port_w[2]),
-    .reg_data2port_out_3(reg_data2port_w[3])
+    .d(wr_data), 
+    .q(reg_data2port_w)
   );
 
-  reg_fsm # (
-    .NUM_OF_REG(NUM_OF_REG),
+  reg_decoder # (
+    .REG_ADDR(REG_ADDR),
     .W_WIDTH(W_WIDTH)
-  ) FSM_DUT_REG (
+  ) DEC_REG_DUT (
     .clk(clk), 
     .rst_n(rst_n),
     .sel_en(sel_en),
     .wr_rd_s(wr_rd_s),
     .addr(addr),
-    .reg_data2port_in_0(reg_data2port_w[0]),
-    .reg_data2port_in_1(reg_data2port_w[1]),
-    .reg_data2port_in_2(reg_data2port_w[2]),
-    .reg_data2port_in_3(reg_data2port_w[3]),
+    .reg_data2port_in(reg_data2port_w),
     .wr_en(wr_en_w),
     .rd_data(rd_data),
     .ack(ack)
   );
 
-  assign reg_data2port_out_0 = reg_data2port_w[0];
-  assign reg_data2port_out_1 = reg_data2port_w[1];
-  assign reg_data2port_out_2 = reg_data2port_w[2];
-  assign reg_data2port_out_3 = reg_data2port_w[3];
+  assign reg_data2port_out = reg_data2port_w;
 endmodule : reg_top
