@@ -1,11 +1,11 @@
 module fsm_top # (
-    parameter W_WIDTH = 8,
+    parameter W_WIDTH = 8
 )(
     input clk, rst_n,
     input sw_en, port_busy,
     input [W_WIDTH-1:0] port_addr,
     input [W_WIDTH-1:0] data_in,
-    output reg wr_en
+    output wr_en
 );
 
     wire feed_w, wdog_w;
@@ -29,6 +29,5 @@ module fsm_top # (
         .data_in(data_in),
         .wr_en(wr_en),
         .feed(feed_w)
-    )
-
-endmodule
+    );
+endmodule : fsm_top

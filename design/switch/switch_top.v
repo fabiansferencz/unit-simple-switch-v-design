@@ -43,8 +43,9 @@ module switch_top (
 
   //============================================
 
-  mem_top # (
-    .NUM_OF_REG(NUM_OF_PORTS)
+  reg_top # (
+    .NUM_OF_REG(NUM_OF_PORTS),
+    .W_WIDTH(W_WIDTH)
   ) DUT_MEM (
     .clk(clk),
     .rst_n(rst_n),

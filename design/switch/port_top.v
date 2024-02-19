@@ -1,5 +1,5 @@
 `include "fsm_module.v"
-`include "fifo_module.v"
+`include "fifo_top.v"
 
 
 module port_top # (
@@ -7,24 +7,18 @@ module port_top # (
   parameter FIFO_SIZE = 64,
   parameter W_WIDTH = 8 //WORD width
 )(
-  clk, rst_n,
-  //input interface
-  sw_en, port_data, rd_out,
-  //port output interface
-  port_out, port_rdy, port_rd, port_addr
+  input clk, rst_n,
+  //-----------------------INPUT if
+  input sw_en,
+  input [W_WIDTH-1:0] port_data, port_addr,
+  output rd_out,
+  //------------------------OUTPUT if
+  input port_rd,
+  output [W_WIDTH-1:0] port_out,
+  output port_rdy
 );  
 
-  input clk, rst_n;
-  //-----------------------
-  input sw_en;
-  input [W_WIDTH-1:0] port_data, port_addr;
-  output rd_out;
-  //------------------------
-  input port_rd;
-  output [W_WIDTH-1:0] port_out;
-  output port_rdy;
-
-  wire port_busy, wr_enable, ffe;
+  wire fifo_full_w, wr_en_w, ffe;
 
   fifo # (
     .FIFO_SIZE(FIFO_SIZE),
@@ -32,24 +26,24 @@ module port_top # (
   ) DUT_PORT_FIFO (
     .clk(clk),
     .rst_n(rst_n),
-    .wr_en(wr_enable),
+    .wr_en(wr_en_w),
     .rd_en(port_rd),
     .data_in(port_data),
     .data_out(port_out),
     .empty(port_rdy),
-    .full(port_busy)
+    .full(fifo_full_w)
   );
 
-  fsm # (
+  fsm_top # (
     .W_WIDTH(W_WIDTH)
   ) DUT_PORT_FSM (
     .clk(clk),
     .rst_n(rst_n),
     .sw_en(sw_en),
+    .port_busy(fifo_full_w),
     .port_addr(port_addr),
     .data_in(port_data),
-    .port_busy(port_busy),
-    .wr_en(wr_enable)
+    .wr_en(wr_en_w)
   );
 
   assign rd_out = !port_busy;

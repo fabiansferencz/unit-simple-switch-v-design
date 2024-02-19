@@ -6,7 +6,7 @@ module fifo # (
     input wr_en, rd_en,
     input [W_WIDTH-1:0] data_in,
     output [W_WIDTH-1:0] data_out,
-    output reg full, empty
+    output full, empty
 );  
 
     reg [W_WIDTH-1:0] ram [FIFO_SIZE-1:0];//a memory with 64 locations depth and 8 bits word
