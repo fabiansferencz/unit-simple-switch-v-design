@@ -33,7 +33,7 @@ module switch_top # (
 
   genvar i;
   generate 
-    for(i = 1; i <= NUM_OF_PORTS-1; i = i + 1) begin
+    for(i = 1; i <= NUM_OF_PORTS; i = i + 1) begin
       reg_top # (
         .REG_ADDR(i-1),
         .W_WIDTH(WORD_WIDTH)
@@ -46,7 +46,7 @@ module switch_top # (
         .wr_data(mem_wr_data),
         .rd_data(mem_rd_data),
         .ack(mem_ack),
-        .mem_out(mem_reg2port[i-1])
+        .reg_data2port_out(mem_reg2port[i-1])
       );
 
 

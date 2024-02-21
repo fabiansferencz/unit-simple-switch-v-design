@@ -7,14 +7,14 @@ module reg_decoder # (
   input [W_WIDTH-1:0] addr,
   input [W_WIDTH-1:0] reg_data2port_in,
   
-  output [W_WIDTH-1:0] wr_en,
+  output wr_en,
   output [W_WIDTH-1:0] rd_data,
   output ack
 );
 
   reg ack_nxt, ack_ff;
   reg [7:0] rd_data_nxt, rd_data_ff;
-  reg [7:0] wr_en_nxt, wr_en_ff;
+  reg wr_en_nxt, wr_en_ff;
 
   //combinational
   always @(*) begin
@@ -24,8 +24,7 @@ module reg_decoder # (
 
     if(sel_en && addr == REG_ADDR) begin
       if(wr_rd_s) begin
-        wr_en_nxt = 0;//cleare previous wr_en for continous writting
-        wr_en_nxt[addr] = 1;
+        wr_en_nxt = 1;
         ack_nxt = 1;
       end	
       else begin
