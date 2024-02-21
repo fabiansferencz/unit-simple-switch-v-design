@@ -8,5 +8,5 @@ Welcome to the Simple Cluster Switch DUT TB!
 
 ## Unit level description
 
-[Documentation:](https://drive.google.com/drive/folders/1ueBuaeADh0rY03QISrcev58W1bLKyD5R?usp=sharing)
-[Jira Portal:](https://3founders.atlassian.net/servicedesk/customer/portal/1)
+[Documentation](https://drive.google.com/drive/folders/1ueBuaeADh0rY03QISrcev58W1bLKyD5R?usp=sharing)<br/>
+[Jira Portal](https://3founders.atlassian.net/servicedesk/customer/portal/1)<br/>
