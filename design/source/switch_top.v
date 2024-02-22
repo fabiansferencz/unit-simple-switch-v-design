@@ -10,8 +10,8 @@ module switch_top # (
 )(
   input clk, rst_n,
 
-  input [WORD_WIDTH-1:0] data_in,
   input sw_enable_in,
+  input [WORD_WIDTH-1:0] data_in,
 
   input [NUM_OF_PORTS-1:0] port_read,
   
@@ -22,20 +22,23 @@ module switch_top # (
   output read_out,
   output [(NUM_OF_PORTS*WORD_WIDTH)-1:0] port_out,
   output [NUM_OF_PORTS-1:0] port_ready,
-  output [WORD_WIDTH-1:0] mem_rd_data,
+  output [(NUM_OF_PORTS*WORD_WIDTH)-1:0] mem_rd_data,
   output mem_ack
 );
 
+  wire [WORD_WIDTH-1:0] mem_rd_data_w [NUM_OF_PORTS-1:0];
   wire [WORD_WIDTH-1:0] mem_reg2port [NUM_OF_PORTS-1:0];
-  wire [NUM_OF_PORTS-1:0] rd_port2out;
+  wire [NUM_OF_PORTS-1:0] rd_port2out, ack_w;
+  wire [WORD_WIDTH-1:0] port_out_w [NUM_OF_PORTS-1:0];
+ 
 
   //============================================
 
   genvar i;
   generate 
-    for(i = 1; i <= NUM_OF_PORTS; i = i + 1) begin
+    for(i = 0; i < NUM_OF_PORTS; i = i + 1) begin
       reg_top # (
-        .REG_ADDR(i-1),
+        .REG_ADDR(i),
         .W_WIDTH(WORD_WIDTH)
       ) DUT_REG (
         .clk(clk),
@@ -44,9 +47,9 @@ module switch_top # (
         .wr_rd_s(mem_wr_rd_s),
         .addr(mem_addr),
         .wr_data(mem_wr_data),
-        .rd_data(mem_rd_data),
-        .ack(mem_ack),
-        .reg_data2port_out(mem_reg2port[i-1])
+        .rd_data(mem_rd_data_w[i]),
+        .ack(ack_w[i]),
+        .reg_data2port_out(mem_reg2port[i])
       );
 
 
@@ -58,14 +61,17 @@ module switch_top # (
         .rst_n(rst_n),
         .sw_en(sw_enable_in),
         .port_data(data_in),
-        .rd_out(rd_port2out[i-1]),
-        .port_addr(mem_reg2port[i-1]),
-        .port_out(port_out[(i*WORD_WIDTH)-1:(i*WORD_WIDTH-WORD_WIDTH)]),
-        .port_rdy(port_ready[i-1]),
-        .port_rd(port_read[i-1])
+        .rd_out(rd_port2out[i]),
+        .port_addr(mem_reg2port[i]),
+        .port_out(port_out_w[i]),
+        .port_rdy(port_ready[i]),
+        .port_rd(port_read[i])
       );
     end
   endgenerate
 
   assign read_out = |rd_port2out;
+  assign mem_ack = |ack_w;
+  assign mem_rd_data = {mem_rd_data_w[3], mem_rd_data_w[2], mem_rd_data_w[1], mem_rd_data_w[0]};
+  assign port_out = {port_out_w[3], port_out_w[2], port_out_w[1], port_out_w[0]};
 endmodule : switch_top
