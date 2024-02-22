@@ -20,7 +20,10 @@ module switch_top # (
   input [WORD_WIDTH-1:0] mem_wr_data, 
 
   output read_out,
-  output [(NUM_OF_PORTS*WORD_WIDTH)-1:0] port_out,
+  output [WORD_WIDTH-1:0] port_out_0,
+  output [WORD_WIDTH-1:0] port_out_1,
+  output [WORD_WIDTH-1:0] port_out_2,
+  output [WORD_WIDTH-1:0] port_out_3,
   output [NUM_OF_PORTS-1:0] port_ready,
   output [(NUM_OF_PORTS*WORD_WIDTH)-1:0] mem_rd_data,
   output mem_ack
@@ -73,5 +76,8 @@ module switch_top # (
   assign read_out = |rd_port2out;
   assign mem_ack = |ack_w;
   assign mem_rd_data = {mem_rd_data_w[3], mem_rd_data_w[2], mem_rd_data_w[1], mem_rd_data_w[0]};
-  assign port_out = {port_out_w[3], port_out_w[2], port_out_w[1], port_out_w[0]};
+  assign port_out_0 = port_out_w[0];
+  assign port_out_1 = port_out_w[1];
+  assign port_out_2 = port_out_w[2];
+  assign port_out_3 = port_out_w[3];
 endmodule : switch_top
