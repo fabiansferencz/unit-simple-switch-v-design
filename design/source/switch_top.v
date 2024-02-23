@@ -16,7 +16,7 @@ module switch_top # (
   input [NUM_OF_PORTS-1:0] port_read,
   
   input mem_sel_en, mem_wr_rd_s,
-  input [WORD_WIDTH-1:0] mem_addr,
+  input [$clog2(NUM_OF_PORTS)-1:0] mem_addr,
   input [WORD_WIDTH-1:0] mem_wr_data, 
 
   output read_out,
@@ -41,6 +41,7 @@ module switch_top # (
   generate 
     for(i = 0; i < NUM_OF_PORTS; i = i + 1) begin
       reg_top # (
+        .NUM_OF_PORTS(NUM_OF_PORTS),
         .REG_ADDR(i),
         .W_WIDTH(WORD_WIDTH)
       ) DUT_REG (

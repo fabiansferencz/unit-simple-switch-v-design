@@ -21,7 +21,7 @@ module fifo # (
             rd_pos <= 'b0;
             wr_pos <= 'b0;
             full_s <= 'b0;
-            empty_s <= 'b0;
+            empty_s <= 'b1;
             data_out_s <= 'b0;
         end 
         else begin

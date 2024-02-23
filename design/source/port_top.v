@@ -17,7 +17,7 @@ module port_top # (
   output port_rdy
 );  
 
-  wire fifo_full_w, wr_en_w, ffe;
+  wire fifo_full_w, wr_en_w, fifo_empty_w;
 
   fifo # (
     .FIFO_SIZE(FIFO_SIZE),
@@ -29,11 +29,11 @@ module port_top # (
     .rd_en(port_rd),
     .data_in(port_data),
     .data_out(port_out),
-    .empty(port_rdy),
+    .empty(fifo_empty_w),
     .full(fifo_full_w)
   );
 
-  fsm_top # (
+  fsm # (
     .W_WIDTH(W_WIDTH)
   ) DUT_PORT_FSM (
     .clk(clk),
@@ -46,4 +46,5 @@ module port_top # (
   );
 
   assign rd_out = !fifo_full_w;
+  assign port_rdy = !fifo_empty_w;
 endmodule : port_top
