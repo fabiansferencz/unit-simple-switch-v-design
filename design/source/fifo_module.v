@@ -29,16 +29,13 @@ module fifo # (
                 ram[wr_pos] <= data_in;
                 empty_s <= 1'b0;
 
-                $display("Debug1");
                 if(wr_pos == FIFO_SIZE - 1) begin
-                    $display("Debug2");
                     if(rd_pos == 1'b0) begin
                     full_s <= 1'b1;
                     end	
                     wr_pos <= 1'b0;
                 end	
                 else if(((wr_pos + 1'b1) == rd_pos)) begin
-                    $display("Debug3");
                     full_s <= 1'b1;
                     wr_pos <= wr_pos + 1;
                 end	
