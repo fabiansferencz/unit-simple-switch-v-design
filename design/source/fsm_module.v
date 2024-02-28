@@ -1,5 +1,3 @@
-`include "fsm_wd_module.v"
-
 module fsm # (
     parameter W_WIDTH = 8
 )(

@@ -33,7 +33,7 @@ module port_top # (
     .full(fifo_full_w)
   );
 
-  fsm # (
+  fsm_top # (
     .W_WIDTH(W_WIDTH)
   ) DUT_PORT_FSM (
     .clk(clk),

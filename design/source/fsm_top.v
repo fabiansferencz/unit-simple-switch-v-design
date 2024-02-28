@@ -1,3 +1,6 @@
+`include "fsm_wd_module.v"
+`include "fsm_module.v"
+
 module fsm_top # (
     parameter W_WIDTH = 8
 )(
