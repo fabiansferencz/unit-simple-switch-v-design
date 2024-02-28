@@ -1,7 +1,7 @@
-`include "fsm_wd_module.v"
-`include "fsm_module.v"
+`include "wd_module.v"
+`include "fsm_in_module.v"
 
-module fsm_top # (
+module fsm_in_top # (
     parameter W_WIDTH = 8
 )(
     input clk, rst_n,
@@ -20,9 +20,9 @@ module fsm_top # (
         .wdog(wdog_w)
     );
 
-    fsm # (
+    fsm_in # (
         .W_WIDTH(W_WIDTH)
-    ) FSM_DUT (
+    ) FSM_IN_DUT (
         .clk(clk),
         .rst_n(rst_n),
         .sw_en(sw_en),
@@ -33,4 +33,4 @@ module fsm_top # (
         .wr_en(wr_en),
         .feed(feed_w)
     );
-endmodule : fsm_top
+endmodule : fsm_in_top

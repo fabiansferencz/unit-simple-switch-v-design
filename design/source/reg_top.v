@@ -8,7 +8,7 @@ module reg_top # (
 )(
   input clk, rst_n,
   input sel_en, wr_rd_s,
-  input [$clog2(NUM_OF_PORTS)-1:0] addr,
+  input [W_WIDTH-1:0] addr,
   input [W_WIDTH-1:0] wr_data,
 
   output [W_WIDTH-1:0] rd_data,

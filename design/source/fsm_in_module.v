@@ -1,4 +1,4 @@
-module fsm # (
+module fsm_in # (
     parameter W_WIDTH = 8
 )(
     input clk, rst_n,
@@ -8,27 +8,17 @@ module fsm # (
     output wr_en, feed
 );
 
-    localparam IDLE_ST = 3;
-    localparam ADDR_WAIT_ST = 0;
-    localparam DATA_LOAD_ST = 1;
-    localparam PARITY_LOAD_ST = 2;
+    localparam IDLE_ST = 4;
+    localparam START_OF_FRAME_ST = 0;
+    localparam ADDR_WAIT_ST = 1;
+    localparam DATA_LOAD_ST = 2;
+    localparam END_OF_FRAME_ST = 3;
+
+    localparam SOF_BYTE = 8'hFF;
 
     reg wr_en_ff, wr_en_nxt;
-    reg [2:1] state_ff, state_nxt;
+    reg [2:0] state_ff, state_nxt;
     reg feed_wd_ff, feed_wd_nxt;
-
-    always @(posedge clk or rst_n) begin
-        if(!rst_n) begin
-            state_ff <= IDLE_ST;
-            wr_en_ff <= 1'b0;
-            feed_wd_ff <= 1'b0;
-        end 
-        else begin
-            state_ff <= state_nxt;
-            wr_en_ff <= wr_en_nxt;
-            feed_wd_ff <= feed_wd_nxt;
-        end 
-    end
 
     always @( * ) begin
         state_nxt = state_ff;
@@ -43,9 +33,24 @@ module fsm # (
                     state_nxt = IDLE_ST;
                 end 
                 else begin
-                    state_nxt = ADDR_WAIT_ST;
+                    state_nxt = START_OF_FRAME_ST;
                 end 
             end
+
+            START_OF_FRAME_ST: begin
+                if(data_in == SOF_BYTE) begin
+                    state_nxt = ADDR_WAIT_ST;
+                    feed_wd_nxt = 1'b0;
+                end 
+                else if(wdog) begin
+                    state_nxt = IDLE_ST;
+                    feed_wd_nxt = 1'b0;
+                end 
+                else begin
+                    state_nxt = START_OF_FRAME_ST;
+                    feed_wd_nxt = 1'b1;
+                end 
+            end 
 
             ADDR_WAIT_ST : begin
                 if(data_in == port_addr) begin
@@ -53,13 +58,8 @@ module fsm # (
                     wr_en_nxt = 1'b1;
                     feed_wd_nxt = 1'b0;
                 end 
-                else if(wdog) begin
-                    state_nxt = IDLE_ST;
-                    feed_wd_nxt = 1'b0;
-                end
                 else begin
-                    state_nxt = ADDR_WAIT_ST;
-                    feed_wd_nxt = 1'b1;
+                    state_nxt = IDLE_ST;
                 end
             end 
 
@@ -68,27 +68,42 @@ module fsm # (
                     state_nxt = IDLE_ST;
                     wr_en_nxt = 1'b0;
                 end 
-                else if(!sw_en) begin // TODO there is a requirement for an additional last field for the parity 
-                    state_nxt = PARITY_LOAD_ST;
-                    wr_en_nxt = 1'b0;
+                else if(!sw_en) begin
+                    state_nxt = END_OF_FRAME_ST;
                 end 
                 else begin
                     state_nxt = DATA_LOAD_ST;
-                    wr_en_nxt = 1'b1;
                 end 
             end 
 
-            PARITY_LOAD_ST : begin
+            //PARITY byte is included now in the payload
+
+            END_OF_FRAME_ST : begin
+                wr_en_nxt = 1'b0;
+
                 if(!sw_en || port_busy) begin
                     state_nxt = IDLE_ST;
                 end 
                 else begin
-                    state_nxt = ADDR_WAIT_ST;
+                    state_nxt = START_OF_FRAME_ST;
                 end 
-            end
+            end 
         endcase
+    end
+
+    always @(posedge clk or negedge rst_n) begin
+        if(!rst_n) begin
+            state_ff <= IDLE_ST;
+            wr_en_ff <= 1'b0;
+            feed_wd_ff <= 1'b0;
+        end 
+        else begin
+            state_ff <= state_nxt;
+            wr_en_ff <= wr_en_nxt;
+            feed_wd_ff <= feed_wd_nxt;
+        end 
     end
 
     assign wr_en = wr_en_ff;
     assign feed = feed_wd_ff;
-endmodule : fsm
+endmodule : fsm_in

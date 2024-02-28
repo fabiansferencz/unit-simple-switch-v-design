@@ -16,7 +16,7 @@ module switch_top # (
   input [NUM_OF_PORTS-1:0] port_read,
   
   input mem_sel_en, mem_wr_rd_s,
-  input [$clog2(NUM_OF_PORTS)-1:0] mem_addr,
+  input [WORD_WIDTH-1:0] mem_addr,
   input [WORD_WIDTH-1:0] mem_wr_data, 
 
   output read_out,

@@ -5,7 +5,7 @@ module reg_decoder # (
 )(
   input clk, rst_n,
   input sel_en, wr_rd_s,
-  input [$clog2(NUM_OF_PORTS)-1:0] addr,
+  input [W_WIDTH-1:0] addr,
   input [W_WIDTH-1:0] reg_data2port_in,
   
   output wr_en,
