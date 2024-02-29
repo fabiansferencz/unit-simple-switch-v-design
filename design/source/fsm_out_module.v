@@ -14,7 +14,7 @@ module fsm_out # (
     localparam READ_FIFO_PKT_ST = 2;
 
     localparam SOF_BYTE = 8'hFF;
-    localparam DELIMITER = 8'h00;
+    localparam DELIMITER = 8'h55;
 
     //Solution for missing first byte of the pkt fromk fifo in between packets
     //reg ovr_rd_en;
@@ -32,6 +32,7 @@ module fsm_out # (
                 //ovr_rd_en = 0;
 
                 if(port_rd == 0 || port_empty == 1) begin
+                    port_out_nxt = 8'h00;
                     state_nxt = IDLE_ST;
                 end 
                 else begin
@@ -53,9 +54,9 @@ module fsm_out # (
             READ_FIFO_PKT_ST : begin
                 port_out_nxt = fifo_data;
 
-                if(fifo_data == DELIMITER) begin
+                if(fifo_data == DELIMITER) begin//there should be a check with empty, if there is continues packets available
                     rd_en_nxt = 0;
-                    //ovr_rd_en = 1;
+                    //ovr_rd_en = 1; - maybe the above can remove the need of override, see after Denisa finds the bug
                     state_nxt = IDLE_ST;
                 end 
                 else begin

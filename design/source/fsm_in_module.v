@@ -20,13 +20,11 @@ module fsm_in # (
     reg [2:0] state_ff, state_nxt;
     reg feed_wd_ff, feed_wd_nxt;
 
-    always @( * ) begin
+    always @(*) begin
         state_nxt = state_ff;
         wr_en_nxt = wr_en_ff;
         feed_wd_nxt = feed_wd_ff;
 
-        //the delimitation between the packets is done by releasing sw_en for one cock in between the packets, for consecutive packets
-        //see about the port busy while ini the middle of the packet
         case(state_ff)
             IDLE_ST: begin
                 if(!sw_en || port_busy) begin
@@ -69,6 +67,7 @@ module fsm_in # (
                     wr_en_nxt = 1'b0;
                 end 
                 else if(!sw_en) begin
+                    wr_en_nxt = 1'b0;
                     state_nxt = END_OF_FRAME_ST;
                 end 
                 else begin
@@ -79,8 +78,6 @@ module fsm_in # (
             //PARITY byte is included now in the payload
 
             END_OF_FRAME_ST : begin
-                wr_en_nxt = 1'b0;
-
                 if(!sw_en || port_busy) begin
                     state_nxt = IDLE_ST;
                 end 
