@@ -52,6 +52,7 @@ module port_top # (
   ) PORT_OUT_FSM_DUT (
     .clk(clk),
     .rst_n(rst_n),
+    .sw_en(sw_en),
     .port_addr(port_addr),
     .fifo_data(fifo_data_w),
     .port_rd(port_rd),

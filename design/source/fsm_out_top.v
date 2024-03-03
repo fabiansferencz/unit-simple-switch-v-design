@@ -5,6 +5,7 @@ module fsm_out_top # (
     parameter W_WIDTH = 8
 )(
     input clk, rst_n,
+    input sw_en,
     input [W_WIDTH-1:0] port_addr, fifo_data,
     input port_rd, port_empty,
     output rd_en,
@@ -27,6 +28,7 @@ module fsm_out_top # (
     ) FSM_OUT_DUT (
         .clk(clk),
         .rst_n(rst_n),
+        .sw_en(sw_en),
         .port_addr(port_addr),
         .fifo_data(fifo_data),
         .port_rd(port_rd),

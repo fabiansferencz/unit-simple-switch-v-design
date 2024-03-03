@@ -2,6 +2,7 @@ module fsm_out # (
     parameter W_WIDTH = 8
 )(
     input clk, rst_n,
+    input sw_en,
     input [W_WIDTH-1:0] port_addr, fifo_data,
     input port_rd, port_empty,
     output rd_en,
@@ -31,7 +32,7 @@ module fsm_out # (
             IDLE_ST: begin
                 //ovr_rd_en = 0;
 
-                if(port_rd == 0 || port_empty == 1) begin
+                if(sw_en == 0 || port_rd == 0 || port_empty == 1) begin
                     port_out_nxt = 8'h00;
                     state_nxt = IDLE_ST;
                 end 
