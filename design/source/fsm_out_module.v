@@ -18,7 +18,7 @@ module fsm_out # (
     localparam DELIMITER = 8'h55;
 
     //Solution for missing first byte of the pkt fromk fifo in between packets
-    //reg ovr_rd_en;
+    reg ovr_rd_en;//flag
     reg rd_en_ff, rd_en_nxt;
     reg [2:0] state_ff, state_nxt;
     reg [W_WIDTH-1:0] port_out_ff, port_out_nxt;
@@ -30,8 +30,6 @@ module fsm_out # (
 
         case(state_ff)
             IDLE_ST: begin
-                //ovr_rd_en = 0;
-
                 if(sw_en == 0 || port_rd == 0 || port_empty == 1) begin
                     port_out_nxt = 8'h00;
                     state_nxt = IDLE_ST;
@@ -42,9 +40,10 @@ module fsm_out # (
             end
 
             ADD_SOF_ST: begin
-               port_out_nxt = SOF_BYTE;
-               rd_en_nxt = 1;//start reading data from packet
-               state_nxt = ADD_ADDR_ST;
+                ovr_rd_en = 0;
+                port_out_nxt = SOF_BYTE;
+                rd_en_nxt = 1;//start reading data from packet
+                state_nxt = ADD_ADDR_ST;
             end 
 
             ADD_ADDR_ST : begin
@@ -55,10 +54,15 @@ module fsm_out # (
             READ_FIFO_PKT_ST : begin
                 port_out_nxt = fifo_data;
 
-                if(fifo_data == DELIMITER) begin//there should be a check with empty, if there is continues packets available
-                    rd_en_nxt = 0;
-                    //ovr_rd_en = 1; - maybe the above can remove the need of override, see after Denisa finds the bug
-                    state_nxt = IDLE_ST;
+                if(fifo_data == DELIMITER) begin
+                    rd_en_nxt = 0;//disable reading for fifo and preapre the SOF and ADDR bytes
+                    if(port_rd == 1 && port_empty == 0 && sw_en == 1) begin
+                        ovr_rd_en = 1;//flag used for placing the fifo on hold until the SOF and ADDR are appended back to the packet
+                        state_nxt = ADD_SOF_ST;
+                    end    
+                    else begin
+                        state_nxt = IDLE_ST;
+                    end 
                 end 
                 else begin
                     state_nxt = READ_FIFO_PKT_ST;
@@ -80,7 +84,6 @@ module fsm_out # (
         end 
     end
 
-    assign rd_en = rd_en_ff;
-    //assign rd_en =((port_empty == 0) && ovr_rd_en) ? 0 : rd_en_ff;
+    assign rd_en = (ovr_rd_en) ? 0 : rd_en_ff;
     assign port_out = port_out_ff;
 endmodule : fsm_out
